@@ -25,11 +25,11 @@ void Task_1(void)
 				Get_Light_TTL();
 				angle_pid_control(angle_initial);
 			}
+			SoundLight();
 			workstep++;
 			break;
 			
 		case 2:  // 停车
-			SoundLight();
 			motor_stop();
 			delay_ms(100);
 			if(Line_flag)
@@ -63,11 +63,12 @@ void Task_2(void)
 				Get_Light_TTL();
 				angle_pid_control(angle_initial);
 			}
+			SoundLight();
 			workstep++;
 			break;
 		
 		case 2: // 寻迹
-			SoundLight();
+			motor_stop();
 			delay_ms(400);
 			basespeed = 290;
 			while(Line_flag)
@@ -75,24 +76,43 @@ void Task_2(void)
 				Get_Light_TTL();
 				track_pid_control();
 			}
+			SoundLight();
 			workstep++;
 			break;
 			
 		case 3: // 直行
-			SoundLight();
+			motor_stop();
+			delay_ms(100);
+			if(Line_flag==0) turn_flag = 1;
+			pid_Init(&angle, POSITION_PID, 7, 0, 3);
+			basespeed = 0;
+			while(turn_flag)
+			{
+				angle_pid_control(angle_initial);
+				turn_time++;
+				if(turn_time > TimeLimit)
+				{	
+					baisetime = 0;
+					turn_time = 0;
+					turn_flag = 0;
+				}
+			}
+			motor_stop();
+			delay_ms(400);
+			
 			pid_Init(&angle, POSITION_PID, 8, 0, 35);
-		    delay_ms(700);
 			basespeed = 320;
 			while(Line_flag == 0)
 			{				
 				Get_Light_TTL();
 				angle_pid_control(angle_initial);
 			}
+			SoundLight();
 			workstep++;
 			break;
 			
 		case 4: // 寻迹
-			SoundLight();
+			motor_stop();
 			delay_ms(500);
 			basespeed = 290;
 			while(Line_flag)
@@ -100,26 +120,34 @@ void Task_2(void)
 				Get_Light_TTL();
 				track_pid_control();
 			}
+			SoundLight(); 
 			workstep++;
 			break;
 			
 		case 5: // 停车
-			SoundLight(); 
 			motor_stop();
 			delay_ms(100);
-			if(Line_flag == 0)
+			pid_Init(&angle, POSITION_PID, 7, 0, 2.5);
+			while(turn_flag)
 			{
-				motor_stop();
-				delay_ms(300); 
-				Task = 0; 
-				first_flag = 0;
-				start_flag = 0;
-				Line_flag = 0;
-				basespeed = 0;
-				workstep = 0;
+				angle_pid_control(angle_initial);
+				turn_time++;
+				if(turn_time > TimeLimit + 150)
+				{	
+					motor_stop();
+					baisetime = 0;
+					turn_time = 0;
+					turn_flag = 0;
+					delay_ms(300); 
+					Task = 0; 
+					first_flag = 0;
+					start_flag = 0;
+					Line_flag = 0;
+					basespeed = 0;
+					workstep = 0;
+				}
 			}
 			break;
-			
 	}
 }
 
