@@ -53,9 +53,10 @@ int main(void)
 	//pid_Init(&angle, POSITION_PID, 8, 0, 35);
 	// 角度环 Task_3
 	//pid_Init(&angle, POSITION_PID, 8, 0, 30);
-	pid_Init(&angle, POSITION_PID, 5.2, 0, 1.4);
+//	pid_Init(&angle, POSITION_PID, 5.2, 0, 1.4);
 	// 寻迹环
-	pid_Init(&trackLine, POSITION_PID, 4.7, 0, 1.7);//4.8,0,1.5
+//	pid_Init(&trackLine, POSITION_PID, 4.7, 0, 1.7);//4.8,0,1.5
+	pid_Init(&trackLine, POSITION_PID, 6, 0, 2.2);//4.8,0,1.5
 	
 	while(1) 
 	{    
